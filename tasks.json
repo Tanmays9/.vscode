@@ -1,0 +1,111 @@
+/* setx tempDateTime "$env:tempDateTime;\the\directory\to\add" -m 
+1-> sfdx force:project:create --projectname mywork3
+ * --outputdir ${config:Backup_Dir}${input:folderPrefix}_$((Get-Date).ToString('dd-MMMM-yy hhtt'))
+ * --defaultpackagedir myapp --manifest
+ * 2-> cd ${config:Backup_Dir}${input:folderPrefix}_$((Get-Date).ToString('dd-MMMM-yy hhtt'))
+ * 3-> sfdx force:config:set defaultusername=BriskmindsOrg
+ * 4-> sfdx force:source:retrieve -x .\manifest\package.xml
+ */
+{
+  "version": "2.0.0",
+  "options": {
+    "env": {
+      "Date_Time": "${config:Date_Time}",
+      "Backup_Dir": "${config:Backup_Dir}"
+    }
+  },
+  "tasks": [
+    {
+      "label": "Create Project",
+      "command": "sfdx",
+      "type": "shell",
+      "args": [
+        "force:project:create",
+        "--projectname",
+        "\"${input:folderPrefix}_${config:Date_Time}\"",
+        "--outputdir",
+        "${config:Backup_Dir}",
+        "--manifest"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "backup"
+      },
+      "group": "build"
+    },
+    {
+      "label": "Authorize an Org",
+      "type": "shell",
+      "command": "cd",
+      "args": [
+        ".\\${input:folderPrefix}_${config:Date_Time}",
+        ";",
+        "sfdx",
+        "force:config:set",
+        "defaultusername=${input:userName}"
+      ],
+      "group": "build",
+      "dependsOn": ["Create Project"],
+      "options": {
+        "cwd": "${config:Backup_Dir}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "backup"
+      }
+    },
+    {
+      "label": "Retrive source from org with manifest",
+      "type": "shell",
+      "command": "cd",
+      "args": [
+        ".\\${input:folderPrefix}_${config:Date_Time}",
+        ";",
+        "sfdx",
+        "force:source:retrieve",
+        "-x",
+        ".\\manifest\\package.xml"
+      ],
+      "group": "build",
+      "dependsOn": ["Authorize an Org"],
+      "options": {
+        "cwd": "${config:Backup_Dir}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "backup"
+      }
+    },
+    {
+      "label": "Backup Org",
+      "dependsOn": ["Retrive source from org with manifest"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "backup"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "folderPrefix",
+      "description": "Backup Folder Prefix",
+      "default": ""
+    },
+    {
+      "type": "pickString",
+      "id": "userName",
+      "description": "Select your org username.",
+      "options": ["BriskmindsOrg", "tanmay@040.com"],
+      "default": "BriskmindsOrg"
+    }
+  ]
+}

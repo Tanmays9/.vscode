@@ -1,0 +1,4 @@
+{
+    "Date_Time": "$((Get-Date).ToString('dd-MMMM-yy hhtt'))",
+    "Backup_Dir": "C:\\Users\\tanma\\OneDrive\\Desktop\\Workspace\\Backups\\"
+}
