@@ -92,7 +92,7 @@
         "-Recurse",
         ";",
         "code",
-        "-r",
+        // "-r",
         ".\\Work\\${input:folderPrefix}_Work_${config:Date_Time}",
         ";",
         "echo",
@@ -114,7 +114,6 @@
       "dependsOn": ["Copy files to work dir"],
       "command": "code",
       "args": [
-        "-r",
         ".\\Work\\${input:folderPrefix}_Work_${config:Date_Time}",
         ";",
         "echo",
