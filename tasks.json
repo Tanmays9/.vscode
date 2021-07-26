@@ -144,7 +144,7 @@
       "type": "pickString",
       "id": "userName",
       "description": "Select your org username.",
-      "options": ["BriskmindsOrg", "TanmayOrg", "PanOrg"],
+      "options": ["BMOrg", "TanmayOrg", "PanOrg"],
       "default": "PanOrg"
     } 
   ]
